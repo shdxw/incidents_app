@@ -3,21 +3,29 @@ package com.example.myapplication;
 import java.time.LocalDateTime;
 
 public class State {
-    private String sysName;
-    private String status;
-    private int ticketID;
-    private String reportedBy;
-    private LocalDateTime nowDate;
-    private LocalDateTime lastDate;
-    private String description;
+    private String sysName;//
+    private String status;//
+    private int ticketID;//-
+    private String reportedBy;//
+    private LocalDateTime nowDate;//
+    private LocalDateTime lastDate;//
+    private String description;//
+    private String norm;
+    private String lnorm;
+    private String level;
 
-    public State(String sysName, String status, int ticketID, LocalDateTime nowDate, LocalDateTime lastDate, String description) {
+
+    public State(String sysName, String status, int ticketID, String reportedBy, LocalDateTime nowDate, LocalDateTime lastDate, String description, String norm, String lnorm, String level) {
         this.sysName = sysName;
         this.status = status;
         this.ticketID = ticketID;
+        this.reportedBy = reportedBy;
         this.nowDate = nowDate;
         this.lastDate = lastDate;
         this.description = description;
+        this.norm = norm;
+        this.lnorm = lnorm;
+        this.level = level;
     }
 
     public String getSysName() {
@@ -46,6 +54,18 @@ public class State {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getNorm() {
+        return norm;
+    }
+
+    public String getLnorm() {
+        return lnorm;
+    }
+
+    public String getLevel() {
+        return level;
     }
 
     @Override

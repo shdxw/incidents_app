@@ -1,11 +1,13 @@
 package com.example.myapplication;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.simple.JSONArray;
@@ -13,7 +15,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,13 +46,30 @@ public class MainActivity extends AppCompatActivity {
         countriesList.setAdapter(stateAdapter);
         // слушатель выбора в списке
         AdapterView.OnItemClickListener itemListener = new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
                 // получаем выбранный пункт
                 State selectedState = (State) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), "Был выбран пункт " + selectedState.getDescription(),
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Был выбран пункт " + selectedState.getDescription(),
+//                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+                for (State state : states) {
+                    if (state.getStatus().equals(selectedState.getStatus())) {
+                        intent.putExtra("status", selectedState.getStatus());
+                        intent.putExtra("desc", selectedState.getDescription());
+                        intent.putExtra("register", selectedState.getReportedBy());
+                        intent.putExtra("level", selectedState.getLevel());
+                        intent.putExtra("nowDate", selectedState.getLastDate().toString().replace('T', ' '));
+                        intent.putExtra("lastDate", selectedState.getNowDate().toString().replace('T', ' '));
+                        intent.putExtra("system", selectedState.getSysName());
+                        intent.putExtra("otcl", selectedState.getNorm());
+                        intent.putExtra("weight", selectedState.getLnorm());
+                        startActivity(intent);
+                    }
+                }
+
             }
         };
         countriesList.setOnItemClickListener(itemListener);
@@ -89,12 +107,13 @@ public class MainActivity extends AppCompatActivity {
                 String desc = (String) object.get("DESCRIPTION");
                 String system = (String) object.get("EXTSYSNAME");
                 String ticketId = (String) object.get("TICKETID");
+                String norm = (String) object.get("NORM");
+                String lnorm = (String) object.get("LNORM");
+                String level = (String) object.get("CRITIC_LEVEL");
+                String reported = (String) object.get("REPORTEDBY");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                System.out.println(time(timeNow).toString());
-                System.out.println(new State(system, status, Integer.parseInt(ticketId), LocalDateTime.parse(time(time), formatter),
-                        LocalDateTime.parse(time(timeNow), formatter), desc).toString());
-                rsl.add(new State(system, status, Integer.parseInt(ticketId), LocalDateTime.parse(time(time), formatter),
-                        LocalDateTime.parse(time(timeNow), formatter), desc));
+                rsl.add(new State(system, status, Integer.parseInt(ticketId),reported, LocalDateTime.parse(time(time), formatter),
+                        LocalDateTime.parse(time(timeNow), formatter), desc, norm, lnorm, level));
             }
 
 
